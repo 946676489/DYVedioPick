@@ -56,49 +56,106 @@
         .input-group {
             margin-top:2%;
         }
+        .result1 {
+            visibility: hidden;
+        }
+        .result2 {
+            margin-top: 30px;
+            margin-left: 100px;
+            margin-bottom: 30px;
+            height: max-content;
+            width: 80%;
+            align-items: center;
+        }
     </style>
 </head>
+<script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.4.1.min.js"></script>
+<script>
+    function submit() {
+        var link = document.querySelector("input[name=url]").value;
+        document.querySelector("input[name=url]").value = "";
+        if(link.length == 0){
+            alert("请先将视频链接粘贴到上面的输入框！");
+            return;
+        }
+        else
+        {
+            link = link.replace(/复制此链接，打开【(.*?)】，直接观看视频！/g, "");
+            var c = link.lastIndexOf("http://");
+            c = (c === -1) ? link.lastIndexOf("https://") : c;
+            if(c === -1){
+                alert("请先将视频链接粘贴到上面的输入框！");
+                return;
+            }
+            else
+            {
+                // link2 = escape(link)
+                link = link.substr(c);
+                var e = document.getElementById("res");
+                e.value = link;
+                document.getElementById("tag1").setAttribute("style","visibility:visible")
+                e = document.getElementById("download");
+                e.setAttribute("href",getRealLink(link));
+                document.getElementById("dd").value=getRealLink(link);
+                document.getElementById("tag").setAttribute("style","visibility:visible")
+            }
+        }
+    }
 
+    function getRealLink(link){
+        // $("div").load(link);
+        // return $("div").html();
+        $.ajax({
+            type:'get',
+            url:link,//这里是url
+            success:function(body,heads,status){
+                alert(body);  //body就是内容了，也就bai是url网页中的内容
+            }
+        });
+    }
+</script>
+<script>
+    $.ajax({
+        url:'./test.html',
+        type:'get',
+        success:function(res){
+            $('#router').html($(res));
+        }
+    });
+     // $('#router').load('./test.html');
+ </script>
+ 
 <body>
-    <nav class="navbar navbar-inverse">
-      <div class="container">
-        <div id="navbar" class="navbar-collapse collapse">
-          <ul class="nav navbar-nav">
-          </ul>
-        </div><!--/.nav-collapse -->
-      </div><!--/.container-fluid -->
-    </nav>
-
+    <div></div>
     <div class="a-c m-b-20">
-        <!-- 300250 -->
-        <ins class="adsbygoogle" style="display:inline-block;width:300px;height:150px">
-        </ins>
+        <br>
+        <br>
     </div>
     <div class="row">
         <div class="col-sm-12 col-xs-12">
-            <form action="https://vtool.pro/v3/dy" method="post">
+            <form>
                 <div class="input-group input-group-lg" id="form">
                     <span class="input-group-addon" id="type-icon">
                         <svg class="icon icon-douyin">
                             <use xlink:href="#icon-douyin"></use>
                         </svg>
                     </span>
-                    <input type="text" class="form-control" id="url" name="url" placeholder="输入抖音视频分享地址">
-                    <input type="hidden" name="platform" value="douyin">
+                    <input type="text" class="form-control" id="url" name="url" placeholder="输入地址"/>
                 </div><!-- /input-group -->
                 <div class="input-group input-group-lg">
-                    <span class="input-group-addon submit-btn" style="color: #fff;background-color: #337ab7;border-color: #2e6da4;cursor: pointer">解析</span>
+                    <span class="input-group-addon submit-btn" style="color: #fff;background-color: #337ab7;border-color: #2e6da4;cursor: pointer" onclick="submit()">解析</span>
+                </div>
+                <div id="tag" class="result1 result2">
+                    <a id="download" href="#" ><span>在线观看</span></a>
+                </div>
+                <div id="tag1" class="form-control result1 result2">
+                    <span>视频地址:</span>
+                    <input style="font-size:medium;width:100%;height:100%;" id="res" disabled="true" name="res"/>
+                    <input style="font-size:medium;width:100%;height:100%;" id="dd" name="dd"/>
                 </div>
             </form>
 
         </div>
-
-    </div>
-
-    <div class="a-c m-b-20">
-        <!-- 300250 -->
-        <ins class="adsbygoogle" style="display:inline-block;width:300px;height:100px; margin: 20px 0">
-        </ins>
 
     </div>
     </body>
